@@ -11,11 +11,11 @@ class PasswordWithPolicy:
 
 def parse_password_with_policy(line: str) -> PasswordWithPolicy:
     split_line = line.split()
-    min_occ, max_occ = (int(num) for num in split_line[0].split('-'))
+    first_num, second_num = (int(num) for num in split_line[0].split('-'))
     policy_char = split_line[1].split(':')[0]
     password = split_line[2]
-    return PasswordWithPolicy(password, policy_char, min_occ, max_occ)
-    
+    return PasswordWithPolicy(password, policy_char, first_num, second_num)
+
 
 def is_valid_part1(pwp: PasswordWithPolicy) -> bool:
     occurrences = pwp.password.count(pwp.policy_char)
