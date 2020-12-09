@@ -20,12 +20,11 @@ def first_non_valid(nums):
 
 
 def contiguous_interval_with_sum(nums, target):
-    left = 0
-    right = 1
+    left, right = 0, 1
     sum_ = nums[0]
 
     while sum_ != target:
-        if sum_ < target and right < len(nums):
+        if sum_ < target:
             sum_ += nums[right]
             right += 1
         else:

@@ -37,7 +37,7 @@ def parse_instruction(line):
     return Instruction(type_, int(val))
 
 
-def get_all_direct_parents(instructions):
+def find_all_direct_parents(instructions):
     parents = [[] for _ in instructions]
     for idx, instr in enumerate(instructions):
         next_idx = next_state(State(idx), instr).idx
@@ -47,8 +47,8 @@ def get_all_direct_parents(instructions):
     return parents
 
 
-def get_indirect_parents(instr_idx, instructions):
-    all_direct_parents = get_all_direct_parents(instructions)
+def find_indirect_parents(instr_idx, instructions):
+    all_direct_parents = find_all_direct_parents(instructions)
     queue = all_direct_parents[instr_idx]
     visited_nodes = set()
     while queue:
@@ -60,7 +60,7 @@ def get_indirect_parents(instr_idx, instructions):
     return visited_nodes
 
 
-def get_final_state(instructions, init_state=State()):
+def final_state(instructions, init_state=State()):
     seen_instr = set()
     state = init_state
     while state.idx < len(instructions):
@@ -74,17 +74,17 @@ def get_final_state(instructions, init_state=State()):
 
 def final_state_with_switch(instructions):
     last_instr_idx = len(instructions) - 1
-    final_idxs = get_indirect_parents(last_instr_idx, instructions) | {last_instr_idx}
+    final_idxs = find_indirect_parents(last_instr_idx, instructions) | {last_instr_idx}
     state = State()
     while True:
         next_with_switch = next_state_with_switch(state, instructions[state.idx])
         if next_with_switch.idx in final_idxs:
-            return get_final_state(instructions,next_with_switch)
+            return final_state(instructions,next_with_switch)
         state = next_state(state, instructions[state.idx])
 
 
 lines = Path('input.txt').read_text().splitlines()
 instructions = list(map(parse_instruction, lines))
 
-print('part 1:', get_final_state(instructions).accum)
+print('part 1:', final_state(instructions).accum)
 print('part 2:', final_state_with_switch(instructions).accum)
