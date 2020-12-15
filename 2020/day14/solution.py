@@ -14,17 +14,11 @@ def create_or_mask(mask_str):
 
 
 def create_xor_masks(mask_str):
-    float_bits = [2**i for i, char in enumerate(mask_str[::-1]) if char == 'X']
-
-    masks = []
+    float_bits = [2**i for i, char in enumerate(reversed(mask_str)) if char == 'X']
 
     bit_combinations = itertools.product((0, 1), repeat=len(float_bits))
 
-    for comb in bit_combinations:
-        mask = reduce(xor, (bit * is_taken for bit, is_taken in zip(float_bits, comb)))
-        masks.append(mask)
-
-    return masks
+    return [reduce(xor, itertools.compress(float_bits, comb), 0) for comb in bit_combinations]
 
 
 def parse_mem_write(line):
