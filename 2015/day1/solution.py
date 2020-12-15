@@ -1,25 +1,21 @@
 from pathlib import Path
+from itertools import accumulate
 
 
-floor_change = {
-    '(': 1,
-    ')': -1
-}
+def floor_change(par):
+    return 1 if par == '(' else -1
 
 
-def solve_part1(parentheses):
-    return sum(floor_change[paren] for paren in parentheses)
+def solve_part1(floor_changes):
+    return sum(floor_changes)
 
 
-def solve_part2(parentheses):
-    floor = 0
-    for pos, paren in enumerate(parentheses):
-        floor += floor_change[paren]
-        if floor == -1:
-            return pos + 1
+def solve_part2(floor_changes):
+    return 1 + next(pos for pos, acc in enumerate(accumulate(floor_changes)) if acc == -1)
 
 
 parentheses = Path('input.txt').read_text()
+floor_changes = list(map(floor_change, parentheses))
 
-print(solve_part1(parentheses))
-print(solve_part2(parentheses))
+print(solve_part1(floor_changes))
+print(solve_part2(floor_changes))
