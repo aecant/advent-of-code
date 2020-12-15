@@ -1,8 +1,13 @@
 import re
-import itertools
+from itertools import chain, combinations
 from functools import reduce
 from operator import xor
 from pathlib import Path
+
+
+def powerset(seq):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    return chain.from_iterable(combinations(seq, r) for r in range(len(seq) + 1))
 
 
 def create_and_mask(mask_str):
@@ -16,14 +21,11 @@ def create_or_mask(mask_str):
 def create_xor_masks(mask_str):
     float_bits = [2**i for i, char in enumerate(reversed(mask_str)) if char == 'X']
 
-    bit_combinations = itertools.product((0, 1), repeat=len(float_bits))
-
-    return [reduce(xor, itertools.compress(float_bits, comb), 0) for comb in bit_combinations]
+    return [reduce(xor, subset, 0) for subset in powerset(float_bits)]
 
 
 def parse_mem_write(line):
-    match = re.match(r'^mem\[(\d+)] = (\d+)$', line)
-    addr, val = map(int, match.groups())
+    addr, val = map(int, re.findall(r'\d+', line))
     return addr, val
 
 
@@ -50,8 +52,8 @@ def execute_program_part2(lines):
             xor_masks = create_xor_masks(mask_str)
         else:
             addr, val = parse_mem_write(line)
-            addr_list = [addr ^ xor_mask | or_mask for xor_mask in xor_masks]
-            mem.update(dict.fromkeys(addr_list, val))
+            addresses = (addr ^ xor_mask | or_mask for xor_mask in xor_masks)
+            mem.update(dict.fromkeys(addresses, val))
 
     return mem
 
