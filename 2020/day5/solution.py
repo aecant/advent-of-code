@@ -20,10 +20,8 @@ def get_seat_id(ticket):
     return row * 8 + col
 
 
-def get_my_seat_id(seat_ids):
-    for seat_id, next_seat_id in zip(seat_ids, seat_ids[1:]):
-        if seat_id + 1 != next_seat_id:
-            return seat_id + 1
+def get_my_seat_id(ids):
+    return next(cur + 1 for cur, nxt in zip(ids, ids[1:]) if cur + 1 != nxt)
 
 
 lines = Path('input.txt').read_text().splitlines()
@@ -34,3 +32,6 @@ part2_result = get_my_seat_id(seat_ids)
 
 print('part1:', part1_result)
 print('part2:', part2_result)
+
+assert part1_result == 994
+assert part2_result == 741

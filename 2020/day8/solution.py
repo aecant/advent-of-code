@@ -37,7 +37,7 @@ def parse_instruction(line):
     return Instruction(type_, int(val))
 
 
-def find_all_direct_parents(instructions):
+def build_reverse_graph(instructions):
     parents = [[] for _ in instructions]
     for idx, instr in enumerate(instructions):
         next_idx = next_state(State(idx), instr).idx
@@ -48,14 +48,14 @@ def find_all_direct_parents(instructions):
 
 
 def find_indirect_parents(instr_idx, instructions):
-    all_direct_parents = find_all_direct_parents(instructions)
-    queue = all_direct_parents[instr_idx]
+    reverse_graph = build_reverse_graph(instructions)
+    queue = reverse_graph[instr_idx]
     visited_nodes = set()
     while queue:
         idx = queue.pop()
         if idx not in visited_nodes:
             visited_nodes.add(idx)
-            queue.extend(all_direct_parents[idx])
+            queue.extend(reverse_graph[idx])
 
     return visited_nodes
 
@@ -79,12 +79,18 @@ def final_state_with_switch(instructions):
     while True:
         next_with_switch = next_state_with_switch(state, instructions[state.idx])
         if next_with_switch.idx in final_idxs:
-            return final_state(instructions,next_with_switch)
+            return final_state(instructions, next_with_switch)
         state = next_state(state, instructions[state.idx])
 
 
 lines = Path('input.txt').read_text().splitlines()
 instructions = list(map(parse_instruction, lines))
 
-print('part 1:', final_state(instructions).accum)
-print('part 2:', final_state_with_switch(instructions).accum)
+result_part1 = final_state(instructions).accum
+result_part2 = final_state_with_switch(instructions).accum
+
+print('part 1:', result_part1)
+print('part 2:', result_part2)
+
+assert result_part1 == 1859
+assert result_part2 == 1235

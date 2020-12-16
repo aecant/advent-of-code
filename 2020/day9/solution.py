@@ -12,11 +12,12 @@ def contains_two_sum(nums, target):
     return False
 
 
+def is_valid(nums, idx):
+    return contains_two_sum(nums[idx - WIN_LEN: idx], nums[idx])
+
+
 def first_non_valid(nums):
-    for i in range(WIN_LEN, len(nums)):
-        is_valid = contains_two_sum(nums[i - WIN_LEN: i], nums[i])
-        if not is_valid:
-            return nums[i]
+    return next(nums[i] for i in range(WIN_LEN, len(nums)) if not is_valid(nums, i))
 
 
 def contiguous_interval_with_sum(nums, target):
@@ -34,13 +35,19 @@ def contiguous_interval_with_sum(nums, target):
     return left, right
 
 
+def solve_part2(nums, first_non_valid_num):
+    interval_left, interval_right = contiguous_interval_with_sum(nums, result_part1)
+    interval = nums[interval_left: interval_right]
+    return min(interval) + max(interval)
+
+
 nums = [int(line) for line in Path('input.txt').read_text().splitlines()]
 
-first_non_valid_num = first_non_valid(nums)
+result_part1 = first_non_valid(nums)
+result_part2 = solve_part2(nums, result_part1)
 
-interval_left, interval_right = contiguous_interval_with_sum(nums, first_non_valid_num)
-interval = nums[interval_left: interval_right]
+print('part1:', result_part1)
+print('part2:', result_part2)
 
-
-print('part1:', first_non_valid_num)
-print('part2:', min(interval) + max(interval))
+assert result_part1 == 731031916
+assert result_part2 == 93396727

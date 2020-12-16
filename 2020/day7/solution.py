@@ -9,7 +9,7 @@ def parse_rule(s):
     return parent, children
 
 
-def get_parents(children):
+def reverse_graph(children):
     dic = defaultdict(list)
     for parent, children in children.items():
         for _, child in children:
@@ -42,8 +42,13 @@ def count_required_children(bag, children, cache={}):
 lines = Path('input.txt').read_text().splitlines()
 
 children = dict(map(parse_rule, lines))
-parents = get_parents(children)
+parents = reverse_graph(children)
 
-print('part1:', count_possible_parents('shiny gold', parents))
-print('part2:', count_required_children('shiny gold', children) - 1)
+result_part1 = count_possible_parents('shiny gold', parents)
+result_part2 = count_required_children('shiny gold', children) - 1
 
+print('part1:', result_part1)
+print('part2:', result_part2)
+
+result_part1 = 278
+result_part2 = 45157
