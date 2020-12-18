@@ -75,5 +75,12 @@ def count_occupied_seats(mat):
 
 lines = Path('input.txt').read_text().splitlines()
 
-print('part 1:', count_occupied_seats(next_until_stabilized(lines, next_state_part1)))
-print('part 2:', count_occupied_seats(next_until_stabilized(lines, next_state_part2)))
+result_part1 = count_occupied_seats(next_until_stabilized(lines, next_state_part1))
+result_part2 = count_occupied_seats(next_until_stabilized(lines, next_state_part2))
+
+print('part 1:', result_part1)
+print('part 2:', result_part2)
+
+
+assert result_part1 == 2108
+assert result_part2 == 1897
