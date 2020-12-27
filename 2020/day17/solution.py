@@ -25,8 +25,7 @@ def next_mat(mat, relative_neighbors):
     mat = np.pad(mat, 1)
     nxt = np.zeros(mat.shape, int)
 
-    for indices in np.array(list(product(range(len(mat)), repeat=len(mat.shape)))):
-
+    for indices in np.array(list(np.ndindex(mat.shape))):
         active_neighbors = sum(mat[tuple(indices + neighbor)]
                                for neighbor in relative_neighbors
                                if indices_valid(mat.shape, indices + neighbor))
