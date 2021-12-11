@@ -1,5 +1,4 @@
 from pathlib import Path
-from functools import reduce
 from dataclasses import dataclass
 
 
@@ -10,15 +9,22 @@ class Command:
 
 
 @dataclass
-class Pos:
+class State:
     x: int
     y: int
+    aim: int = 0
 
 
-cmd_functions = {
-    'forward': lambda pos, qty: Pos(pos.x + qty, pos.y),
-    'down': lambda pos, qty: Pos(pos.x, pos.y + qty),
-    'up': lambda pos, qty: Pos(pos.x, pos.y - qty)
+cmd_functions_part1 = {
+    'forward': lambda s, qty: State(s.x + qty, s.y),
+    'down': lambda s, qty: State(s.x, s.y + qty),
+    'up': lambda s, qty: State(s.x, s.y - qty)
+}
+
+cmd_functions_part2 = {
+    'forward': lambda s, qty: State(s.x + qty, s.y + s.aim * qty, s.aim),
+    'down': lambda s, qty: State(s.x, s.y, s.aim + qty),
+    'up': lambda s, qty: State(s.x, s.y, s.aim - qty),
 }
 
 
@@ -30,17 +36,16 @@ def parse_input(filename) -> list[Command]:
     return [parse_line(line) for line in Path(filename).read_text().splitlines()]
 
 
-def next_pos(pos: Pos, cmd: Command) -> Pos:
-    return cmd_functions[cmd.type](pos, cmd.qty)
-
-
-def final_position(commands: list[Command]) -> Pos:
-    pos = Pos(0, 0)
+def final_state(commands: list[Command], cmd_functions) -> State:
+    state = State(0, 0)
     for cmd in commands:
-        pos = next_pos(pos, cmd)
-    return pos
+        state = cmd_functions[cmd.type](state, cmd.qty)
+    return state
 
 
 commands = parse_input('input.txt')
-final_pos = final_position(commands)
-assert final_pos.x * final_pos.y == 1480518
+final_pos_part1 = final_state(commands, cmd_functions_part1)
+final_pos_part2 = final_state(commands, cmd_functions_part2)
+
+assert final_pos_part1.x * final_pos_part1.y == 1480518
+assert final_pos_part2.x * final_pos_part2.y == 1282809906
