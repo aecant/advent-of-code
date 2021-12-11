@@ -28,12 +28,12 @@ cmd_functions_part2 = {
 }
 
 
-def parse_input(filename) -> list[Command]:
-    def parse_line(line) -> Command:
-        cmd, qty = line.split()
-        return Command(cmd, int(qty))
+def parse_commands(filename) -> list[Command]:
+    def parse_command(line) -> Command:
+        type, qty = line.split()
+        return Command(type, int(qty))
 
-    return [parse_line(line) for line in Path(filename).read_text().splitlines()]
+    return [parse_command(line) for line in Path(filename).read_text().splitlines()]
 
 
 def final_state(commands: list[Command], cmd_functions) -> State:
@@ -43,7 +43,7 @@ def final_state(commands: list[Command], cmd_functions) -> State:
     return state
 
 
-commands = parse_input('input.txt')
+commands = parse_commands('input.txt')
 final_pos_part1 = final_state(commands, cmd_functions_part1)
 final_pos_part2 = final_state(commands, cmd_functions_part2)
 
