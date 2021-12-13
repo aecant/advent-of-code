@@ -12,6 +12,5 @@ def nth_num(init_nums, nth):
 
 init_nums = [10, 16, 6, 0, 1, 17]
 
-
-print('part 1:', nth_num(init_nums, 2020))
-print('part 2:', nth_num(init_nums, 30000000))
+assert nth_num(init_nums, 2020) == 412
+assert nth_num(init_nums, 30000000) == 243

@@ -35,7 +35,7 @@ def contiguous_interval_with_sum(nums, target):
     return left, right
 
 
-def solve_part2(nums, first_non_valid_num):
+def solve_part2(nums):
     interval_left, interval_right = contiguous_interval_with_sum(nums, result_part1)
     interval = nums[interval_left: interval_right]
     return min(interval) + max(interval)
@@ -44,10 +44,7 @@ def solve_part2(nums, first_non_valid_num):
 nums = [int(line) for line in Path('input.txt').read_text().splitlines()]
 
 result_part1 = first_non_valid(nums)
-result_part2 = solve_part2(nums, result_part1)
-
-print('part1:', result_part1)
-print('part2:', result_part2)
+result_part2 = solve_part2(nums)
 
 assert result_part1 == 731031916
 assert result_part2 == 93396727

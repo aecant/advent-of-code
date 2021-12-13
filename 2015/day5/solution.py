@@ -1,12 +1,5 @@
-from itertools import tee, accumulate
+from itertools import pairwise, accumulate
 from pathlib import Path
-
-
-def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
 
 
 def contains_more_non_overlapping_pairs(s):
@@ -25,13 +18,12 @@ def is_nice_part1(s):
 
 
 def is_nice_part2(s):
-    return (
-        contains_more_non_overlapping_pairs(s)
-        and any(c1 == c3 for c1, c3 in zip(s, s[2:]))
+    return contains_more_non_overlapping_pairs(s) and any(
+        c1 == c3 for c1, c3 in zip(s, s[2:])
     )
 
 
 lines = Path('input.txt').read_text().splitlines()
 
-print(sum(1 for line in lines if is_nice_part1(line)))
-print(sum(1 for line in lines if is_nice_part2(line)))
+assert sum(map(is_nice_part1, lines)) == 258
+assert sum(map(is_nice_part2, lines)) == 53

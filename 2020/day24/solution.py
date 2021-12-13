@@ -8,7 +8,7 @@ next_pos_funcs = {
     'se': lambda x, y: (x + 1 - y % 2, y - 1),
     'sw': lambda x, y: (x - y % 2, y - 1),
     'w': lambda x, y: (x - 1, y),
-    'e': lambda x, y: (x + 1, y)
+    'e': lambda x, y: (x + 1, y),
 }
 
 
@@ -17,7 +17,7 @@ def parse_directions(line):
     i = 0
     while i < len(line):
         jump = 1 if line[i] in ('w', 'e') else 2
-        dirs.append(line[i: i + jump])
+        dirs.append(line[i : i + jump])
         i += jump
     return dirs
 
@@ -47,7 +47,7 @@ def get_neighbors(tile):
 def get_next_day_black_tiles(black_tiles):
     @cache
     def is_next_color_black(tile):
-        black_nbrs = sum(1 for nbr in get_neighbors(tile) if nbr in black_tiles)
+        black_nbrs = sum(nbr in black_tiles for nbr in get_neighbors(tile))
         if tile in black_tiles:
             return black_nbrs in (1, 2)
         return black_nbrs == 2
@@ -74,9 +74,6 @@ init_black_tiles = get_initial_black_tiles(dirs_list)
 
 result_part1 = len(init_black_tiles)
 result_part2 = len(get_black_tiles_after_100_days(init_black_tiles))
-
-print(result_part1)
-print(result_part2)
 
 assert result_part1 == 465
 assert result_part2 == 4078

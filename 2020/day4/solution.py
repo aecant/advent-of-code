@@ -40,11 +40,9 @@ def validate_part2(passport):
 
 passports = [parse_passport(s) for s in Path('input.txt').read_text().split('\n\n')]
 
-part1_result = sum(1 for passport in passports if validate_part1(passport))
-part2_result = sum(1 for passport in passports if validate_part2(passport))
 
-print('part 1:', part1_result)
-print('part 2:', part2_result)
+part1_result = sum(map(validate_part1, passports))
+part2_result = sum(map(validate_part2, passports))
 
 assert part1_result == 219
 assert part2_result == 127

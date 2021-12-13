@@ -3,7 +3,6 @@ import math
 from itertools import chain
 from pathlib import Path
 from collections import namedtuple
-from dataclasses import dataclass
 
 
 MAX_FIELD = 1000
@@ -17,7 +16,7 @@ def create_valid_fields(fields):
     valid_fields = [False] * MAX_FIELD
     for field in fields:
         for r in (field.r1, field.r2):
-            valid_fields[r.min: r.max] = [True] * (r.max - r.min)
+            valid_fields[r.min : r.max] = [True] * (r.max - r.min)
 
     return valid_fields
 
@@ -41,7 +40,9 @@ def parse_tickets(text):
 
 
 def is_valid(value, field):
-    return field.r1.min <= value <= field.r1.max or field.r2.min <= value <= field.r2.max
+    return (
+        field.r1.min <= value <= field.r1.max or field.r2.min <= value <= field.r2.max
+    )
 
 
 def create_available_fields_for_pos(fields, tickets):
@@ -68,14 +69,22 @@ def create_field_positions(fields, tickets):
 
 
 def solve_part1(tickets, valid_fields):
-    return sum(field for field in chain.from_iterable(tickets) if not valid_fields[field])
+    return sum(
+        field for field in chain.from_iterable(tickets) if not valid_fields[field]
+    )
 
 
 def solve_part2(field_pos, my_ticket):
-    return math.prod(my_ticket[pos] for field, pos in field_pos.items() if field.name.startswith('departure'))
+    return math.prod(
+        my_ticket[pos]
+        for field, pos in field_pos.items()
+        if field.name.startswith('departure')
+    )
 
 
-fields_text, my_ticket_text, nearby_tickets_text = Path('input.txt').read_text().split('\n\n')
+fields_text, my_ticket_text, nearby_tickets_text = (
+    Path('input.txt').read_text().split('\n\n')
+)
 
 fields = parse_fields(fields_text)
 my_ticket = parse_all_nums(my_ticket_text)

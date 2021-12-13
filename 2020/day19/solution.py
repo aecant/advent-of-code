@@ -1,6 +1,5 @@
 import re
 from functools import cache
-from operator import truth
 from pathlib import Path
 
 
@@ -12,8 +11,10 @@ def parse_rule(rule_line):
         sub_rule = match_terminal_rule.group(1)
     else:
         sub_rule_ids = re.findall(r'(\d+)( \d+)*', rule_str)
-        sub_rule = [tuple(int(id_) for id_ in sub_rule_id if id_)
-                    for sub_rule_id in sub_rule_ids]
+        sub_rule = [
+            tuple(int(id_) for id_ in sub_rule_id if id_)
+            for sub_rule_id in sub_rule_ids
+        ]
 
     return idx, sub_rule
 
@@ -26,7 +27,8 @@ def create_regex(rules):
 
         rules_str = '|'.join(
             ''.join(create_regex_rec(sub_rule_id) for sub_rule_id in or_expr_list)
-            for or_expr_list in rules[rule_id])
+            for or_expr_list in rules[rule_id]
+        )
         return f'({rules_str})'
 
     return create_regex_rec(0)
@@ -35,7 +37,7 @@ def create_regex(rules):
 def count_correct_messages(rules, messages):
     pattern = create_regex(rules)
     pattern = f'^{pattern}$'
-    return sum(1 for msg in messages if re.match(pattern, msg))
+    return sum(bool(re.match(pattern, msg)) for msg in messages)
 
 
 def get_new_rules(rules):
@@ -56,8 +58,6 @@ messages = messages_txt.splitlines()
 result_part1 = count_correct_messages(rules, messages)
 result_part2 = count_correct_messages(new_rules, messages)
 
-print(result_part1)
-print(result_part2)
 
 assert result_part1 == 241
 assert result_part2 == 424

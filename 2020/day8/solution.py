@@ -17,7 +17,7 @@ class State:
 next_state_functions = {
     'acc': lambda state, instr: State(state.idx + 1, state.accum + instr.val),
     'jmp': lambda state, instr: State(state.idx + instr.val, state.accum),
-    'nop': lambda state, instr: State(state.idx + 1, state.accum)
+    'nop': lambda state, _: State(state.idx + 1, state.accum)
 }
 
 
@@ -88,9 +88,6 @@ instructions = list(map(parse_instruction, lines))
 
 result_part1 = final_state(instructions).accum
 result_part2 = final_state_with_switch(instructions).accum
-
-print('part 1:', result_part1)
-print('part 2:', result_part2)
 
 assert result_part1 == 1859
 assert result_part2 == 1235

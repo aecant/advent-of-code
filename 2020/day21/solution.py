@@ -46,13 +46,15 @@ def create_allergens_dict(ingr_with_all):
 
 def count_not_allergen(ingr_with_all, allergens_dict):
     return sum(
-        sum(1 for ingr in ingredients if ingr not in allergens_dict)
+        sum(ingr not in allergens_dict for ingr in ingredients)
         for ingredients, _ in ingr_with_all
     )
 
 
 def get_canonical_dangerous_ingr(allergens_dict):
-    return ','.join(ingr for ingr, allergen in sorted(allergens_dict.items(), key=lambda t: t[1]))
+    return ','.join(
+        ingr for ingr, _ in sorted(allergens_dict.items(), key=lambda t: t[1])
+    )
 
 
 lines = Path('input.txt').read_text().splitlines()
@@ -62,9 +64,6 @@ allergens_dict = create_allergens_dict(ingr_with_all)
 
 result_part1 = count_not_allergen(ingr_with_all, allergens_dict)
 result_part2 = get_canonical_dangerous_ingr(allergens_dict)
-
-print(result_part1)
-print(result_part2)
 
 assert result_part1 == 1882
 assert result_part2 == 'xgtj,ztdctgq,bdnrnx,cdvjp,jdggtft,mdbq,rmd,lgllb'

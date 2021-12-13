@@ -40,7 +40,7 @@ def next_state_part2(pos_i, pos_j, mat):
 def next_state(pos_i, pos_j, mat, find_seats_func, max_occupied):
     val = mat[pos_i][pos_j]
 
-    count_occupied = sum(1 for seat in find_seats_func(pos_i, pos_j, mat) if seat == '#')
+    count_occupied = sum(seat == '#' for seat in find_seats_func(pos_i, pos_j, mat))
 
     if val == 'L' and count_occupied == 0:
         return '#'
@@ -70,17 +70,13 @@ def next_until_stabilized(mat, next_state_func):
 
 
 def count_occupied_seats(mat):
-    return sum(sum(1 for elem in row if elem == '#') for row in mat)
+    return sum(sum(elem == '#' for elem in row) for row in mat)
 
 
 lines = Path('input.txt').read_text().splitlines()
 
 result_part1 = count_occupied_seats(next_until_stabilized(lines, next_state_part1))
 result_part2 = count_occupied_seats(next_until_stabilized(lines, next_state_part2))
-
-print('part 1:', result_part1)
-print('part 2:', result_part2)
-
 
 assert result_part1 == 2108
 assert result_part2 == 1897

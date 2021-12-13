@@ -10,11 +10,17 @@ class Bus:
 
 
 def parse_buses(line):
-    return [Bus(int(dep), offset) for offset, dep in enumerate(line.split(',')) if dep != 'x']
+    return [
+        Bus(int(dep), offset)
+        for offset, dep in enumerate(line.split(','))
+        if dep != 'x'
+    ]
 
 
 def solve_part1(buses, arrival):
-    time_to_wait, earliest_bus = min((bus.dep - (arrival % bus.dep), bus.dep) for bus in buses)
+    time_to_wait, earliest_bus = min(
+        (bus.dep - (arrival % bus.dep), bus.dep) for bus in buses
+    )
     return time_to_wait * earliest_bus
 
 
@@ -28,7 +34,7 @@ def solve_part2(buses):
 
     for idx, bus in enumerate(buses):
         for time in itertools.count(start, interval):
-            if is_good_time(time, buses[:idx + 1]):
+            if is_good_time(time, buses[: idx + 1]):
                 start = time
                 interval *= bus.dep
                 break
@@ -42,5 +48,5 @@ arrival = int(lines[0])
 buses = parse_buses(lines[1])
 
 
-print('part1:', solve_part1(buses, arrival))
-print('part2:', solve_part2(buses))
+assert solve_part1(buses, arrival) == 3464
+assert solve_part2(buses) == 760171380521445

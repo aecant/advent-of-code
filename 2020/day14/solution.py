@@ -19,7 +19,7 @@ def create_or_mask(mask_str):
 
 
 def create_xor_masks(mask_str):
-    float_bits = [2**i for i, char in enumerate(reversed(mask_str)) if char == 'X']
+    float_bits = [2 ** i for i, char in enumerate(reversed(mask_str)) if char == 'X']
 
     return [reduce(xor, subset, 0) for subset in powerset(float_bits)]
 
@@ -63,8 +63,6 @@ lines = Path('input.txt').read_text().splitlines()
 result_part1 = sum(execute_program_part1(lines).values())
 result_part2 = sum(execute_program_part2(lines).values())
 
-print('part 1:', result_part1)
-print('part 2:', result_part2)
 
 assert result_part1 == 11612740949946
 assert result_part2 == 3394509207186

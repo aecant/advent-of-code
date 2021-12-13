@@ -1,6 +1,7 @@
 from pathlib import Path
 from dataclasses import dataclass
 
+
 @dataclass
 class PasswordWithPolicy:
     password: str
@@ -29,9 +30,10 @@ def is_valid_part2(pwp: PasswordWithPolicy) -> bool:
 
 
 lines = Path('input.txt').read_text().splitlines()
+passwords_with_policies = list(map(parse_password_with_policy, lines))
 
-part1_count = sum(1 for line in lines if is_valid_part1(parse_password_with_policy(line)))
-part2_count = sum(1 for line in lines if is_valid_part2(parse_password_with_policy(line)))
+part1_count = sum(map(is_valid_part1, passwords_with_policies))
+part2_count = sum(map(is_valid_part2, passwords_with_policies))
 
-print('part 1:', part1_count)
-print('part 2:', part2_count)
+assert part1_count == 638
+assert part2_count == 699

@@ -9,7 +9,9 @@ def indices_valid(shape, indices):
 
 
 def get_relative_neighbors(n_dim):
-    return np.array([coord for coord in product((-1, 0, 1), repeat=n_dim) if coord != (0,) * n_dim])
+    return np.array(
+        [coord for coord in product((-1, 0, 1), repeat=n_dim) if coord != (0,) * n_dim]
+    )
 
 
 def parse_init_mat(lines, n_dim):
@@ -26,9 +28,11 @@ def next_mat(mat, relative_neighbors):
     nxt = np.zeros(mat.shape, int)
 
     for indices in np.array(list(np.ndindex(mat.shape))):
-        active_neighbors = sum(mat[tuple(indices + neighbor)]
-                               for neighbor in relative_neighbors
-                               if indices_valid(mat.shape, indices + neighbor))
+        active_neighbors = sum(
+            mat[tuple(indices + neighbor)]
+            for neighbor in relative_neighbors
+            if indices_valid(mat.shape, indices + neighbor)
+        )
 
         if active_neighbors == 3 or mat[tuple(indices)] and active_neighbors == 2:
             nxt[tuple(indices)] = 1
@@ -52,9 +56,6 @@ init_mat_4d = parse_init_mat(lines, 4)
 
 result_part1 = calculate_mat_after_cycles(init_mat_3d, 6).sum()
 result_part2 = calculate_mat_after_cycles(init_mat_4d, 6).sum()
-
-print(result_part1)
-print(result_part2)
 
 
 assert result_part1 == 315

@@ -7,8 +7,8 @@ DIM = 1000
 
 
 functions_part1 = {
-    'turn on': lambda x: 1,
-    'turn off': lambda x: 0,
+    'turn on': lambda _: 1,
+    'turn off': lambda _: 0,
     'toggle': lambda x: x ^ 1
 }
 

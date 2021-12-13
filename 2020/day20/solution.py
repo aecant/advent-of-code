@@ -8,24 +8,30 @@ from dataclasses import dataclass, field, replace
 
 import numpy as np
 
-monster = np.array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-                    [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
-                    [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1]])
+monster = np.array(
+    [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+        [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1],
+    ]
+)
 
-transforms_list = [(),
-                   (np.rot90,),
-                   (np.fliplr,),
-                   (np.flipud,),
-                   (np.rot90, np.fliplr),
-                   (np.rot90, np.flipud),
-                   (np.fliplr, np.flipud),
-                   (np.rot90, np.fliplr, np.flipud)]
+transforms_list = [
+    (),
+    (np.rot90,),
+    (np.fliplr,),
+    (np.flipud,),
+    (np.rot90, np.fliplr),
+    (np.rot90, np.flipud),
+    (np.fliplr, np.flipud),
+    (np.rot90, np.fliplr, np.flipud),
+]
 
 
 @dataclass
 class Tile:
     id: int
-    mat: np.array
+    mat: np.ndarray
     borders: set[int]
     rev_borders: set[int]
     pos: tuple[int, int] = None
@@ -60,7 +66,9 @@ def parse_tile(img_txt):
 
     borders_array = (mat[0], mat[-1], mat[:, 0], mat[:, -1])  # up, down, left, right
     borders = {int(''.join(map(str, border)), 2) for border in borders_array}
-    rev_borders = {int(''.join(map(str, reversed(border))), 2) for border in borders_array}
+    rev_borders = {
+        int(''.join(map(str, reversed(border))), 2) for border in borders_array
+    }
 
     return tile_id, Tile(tile_id, mat, borders, rev_borders)
 
@@ -93,20 +101,23 @@ def neighbors(mat, idxs):
         return 0 <= i < dim and 0 <= j < dim
 
     nbr_idxs_list = np.array(((0, 1), (1, 0), (-1, 0), (0, -1)))
-    return [mat[tuple(idxs + nbr_idxs)] for nbr_idxs in nbr_idxs_list
-            if is_valid(idxs + nbr_idxs, mat.shape[0])]
+    return [
+        mat[tuple(idxs + nbr_idxs)]
+        for nbr_idxs in nbr_idxs_list
+        if is_valid(idxs + nbr_idxs, mat.shape[0])
+    ]
 
 
 def add_positions(tiles):
     def find_correct_tile(nbrs, taken):
-        empty_nbrs_count = sum(1 for nbr in nbrs if nbr is None)
+        empty_nbrs_count = sum(nbr is None for nbr in nbrs)
         for nbr in filter(bool, nbrs):
             for adj in nbr.adj - taken:
                 avail_adj = adj.adj - taken
                 if len(avail_adj) == empty_nbrs_count:
                     return adj
 
-    shape = (int(math.sqrt(len(tiles))), ) * 2
+    shape = (int(math.sqrt(len(tiles))),) * 2
     pos_mat = np.empty(shape, Tile)
 
     up_left_corner = next(get_corners(tiles))
@@ -130,7 +141,7 @@ def has_aligned_border(tile1, tile2):
         (0, -1): ((..., -1), (..., 0)),
         (0, 1): ((..., 0), (..., -1)),
         (-1, 0): ((-1, ...), (0, ...)),
-        (1, 0): ((0, ...), (-1, ...))
+        (1, 0): ((0, ...), (-1, ...)),
     }
     diff = tuple_diff(tile1.pos, tile2.pos)
     idxs1, idxs2 = idxs_dict[diff]
@@ -138,8 +149,11 @@ def has_aligned_border(tile1, tile2):
 
 
 def reject_candidate(chosen_tiles):
-    return any(not has_aligned_border(t1, t2)
-               for t1, t2 in combinations(chosen_tiles, 2) if t2 in t1.adj)
+    return any(
+        not has_aligned_border(t1, t2)
+        for t1, t2 in combinations(chosen_tiles, 2)
+        if t2 in t1.adj
+    )
 
 
 def apply_transforms(mat, transforms):
@@ -193,21 +207,23 @@ def find_correct_tile_transform(tiles):
 
 def rebuild_image(tiles):
     arranged_tiles = find_correct_tile_transform(tiles)
-    shape = (int(math.sqrt(len(tiles))), ) * 2
+    shape = (int(math.sqrt(len(tiles))),) * 2
     mat_pos = np.empty(shape, Tile)
     for tile in arranged_tiles:
         mat_pos[tile.pos] = tile
 
     return np.vstack(
-        [np.hstack([tile.mat[1:-1, 1:-1] for tile in row])
-         for row in mat_pos]
+        [np.hstack([tile.mat[1:-1, 1:-1] for tile in row]) for row in mat_pos]
     )
 
 
 def get_monster_positions(img):
     height, width = monster.shape
-    return [(i, j) for i, j in np.ndindex(tuple_diff(img.shape, monster.shape))
-            if (monster | img[i: i + height, j: j + width]).all()]
+    return [
+        (i, j)
+        for i, j in np.ndindex(tuple_diff(img.shape, monster.shape))
+        if (monster | img[i : i + height, j : j + width]).all()
+    ]
 
 
 def get_water_roughness(img):
@@ -215,7 +231,7 @@ def get_water_roughness(img):
     for transf_img in get_mat_transforms(img):
         if monster_positions := get_monster_positions(transf_img):
             for i, j in monster_positions:
-                transf_img[i: i + height, j: j + width] *= monster
+                transf_img[i : i + height, j : j + width] *= monster
             return transf_img.sum()
 
 
