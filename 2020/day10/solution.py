@@ -14,7 +14,7 @@ def find_next_jolt(jolt, jolt_set):
 
 
 def get_diffs_counter(jolt_set):
-    counter = defaultdict(lambda: 0)
+    counter = defaultdict(int)
     curr, next_ = 0, find_next_jolt(0, jolt_set)
     while next_:
         diff = next_ - curr
@@ -46,5 +46,8 @@ jolt_set.update((0, last_jolt))
 
 diffs_counter = get_diffs_counter(jolt_set)
 
-print('part1:', diffs_counter[1] * diffs_counter[3])
-print('part2:', possible_combinations(last_jolt, jolt_set))
+part1 = diffs_counter[1] * diffs_counter[3]
+part2 = possible_combinations(last_jolt, jolt_set)
+
+assert part1 == 2470
+assert part2 == 1973822685184
