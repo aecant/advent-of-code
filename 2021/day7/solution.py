@@ -10,15 +10,28 @@ def sum_up_to(num):
     return np.arange(num + 1).sum()
 
 
-def calculate_fuel(crabs, distance_function):
-    def calculate_spot_fuel(spot):
+def find_min_fuel(crabs, distance_function):
+    def calc_fuel(spot):
         return sum(distance_function(abs(crab - spot)) for crab in crabs)
 
-    min_, max_ = min(crabs), max(crabs)
-    return map(calculate_spot_fuel, range(min_, max_ + 1))
+    def find_minimum(left, right):
+        spot = left + (right - left) // 2
+        fuel = calc_fuel(spot)
+        right_fuel = calc_fuel(spot + 1)
+        left_fuel = calc_fuel(spot - 1)
+
+        if fuel <= left_fuel and fuel <= right_fuel:
+            return fuel
+
+        if fuel < right_fuel:
+            return find_minimum(left, spot)
+        else:
+            return find_minimum(spot, right)
+
+    return find_minimum(min(crabs), max(crabs))
 
 
 crabs = parse_crabs('input.txt')
 
-assert min(calculate_fuel(crabs, lambda d: d)) == 342730
-assert min(calculate_fuel(crabs, sum_up_to)) == 92335207
+assert find_min_fuel(crabs, lambda d: d) == 342730
+assert find_min_fuel(crabs, sum_up_to) == 92335207
