@@ -5,7 +5,9 @@ from collections import defaultdict
 
 def parse_rule(s):
     parent = ' '.join(s.split()[:2])
-    children = [(int(qty), child) for qty, child in re.findall(r'(\d+) (\w+ \w+) bags?[,.]', s)]
+    children = [
+        (int(qty), child) for qty, child in re.findall(r'(\d+) (\w+ \w+) bags?[,.]', s)
+    ]
     return parent, children
 
 
@@ -30,13 +32,12 @@ def count_possible_parents(bag, parents_dict):
     return len(counted)
 
 
-def count_required_children(bag, children, cache={}):
+def count_required_children(bag, children):
     if not children[bag]:
         return 1
-    if bag not in cache:
-        cache[bag] = 1 + sum(count_required_children(child, children, cache) * qty for qty, child in children[bag])
-
-    return cache[bag]
+    return 1 + sum(
+        count_required_children(child, children) * qty for qty, child in children[bag]
+    )
 
 
 lines = Path('input.txt').read_text().splitlines()
@@ -47,8 +48,5 @@ parents = reverse_graph(children)
 result_part1 = count_possible_parents('shiny gold', parents)
 result_part2 = count_required_children('shiny gold', children) - 1
 
-print('part1:', result_part1)
-print('part2:', result_part2)
-
-result_part1 = 278
-result_part2 = 45157
+assert result_part1 == 278
+assert result_part2 == 45157

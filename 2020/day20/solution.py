@@ -96,15 +96,14 @@ def get_corners(tiles):
 
 
 def neighbors(mat, idxs):
-    def is_valid(idxs, dim):
-        i, j = idxs
-        return 0 <= i < dim and 0 <= j < dim
+    def is_valid(idxs):
+        return 0 <= idxs[0] < len(mat) and 0 <= idxs[1] < len(mat)
 
     nbr_idxs_list = np.array(((0, 1), (1, 0), (-1, 0), (0, -1)))
     return [
         mat[tuple(idxs + nbr_idxs)]
         for nbr_idxs in nbr_idxs_list
-        if is_valid(idxs + nbr_idxs, mat.shape[0])
+        if is_valid(idxs + nbr_idxs)
     ]
 
 

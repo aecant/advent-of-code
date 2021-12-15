@@ -15,7 +15,7 @@ def count_children(days_to_first_child, days_left):
 
 
 def count_lanternfishes(initial, days):
-    return len(initial) + sum(count_children(lfish, days) for lfish in initial)
+    return sum(1 + count_children(lfish, days) for lfish in initial)
 
 
 init_lfishes = parse_lanternfishes('input.txt')
