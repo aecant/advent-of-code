@@ -1,2 +1,5 @@
 [tool.pyright]
 reportUnboundVariable = false
+
+[tool.black]
+skip-string-normalization = 1
