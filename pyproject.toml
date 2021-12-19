@@ -1,5 +1,7 @@
 [tool.pyright]
 reportUnboundVariable = false
+reportGeneralTypeIssues = false
+reportOptionalMemberAccess = false
 
 [tool.black]
 skip-string-normalization = 1
