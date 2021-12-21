@@ -1,6 +1,7 @@
 from functools import reduce
 from collections import defaultdict
 from pathlib import Path
+from operator import itemgetter
 
 
 def parse_ingredients(line):
@@ -53,7 +54,7 @@ def count_not_allergen(ingr_with_all, allergens_dict):
 
 def get_canonical_dangerous_ingr(allergens_dict):
     return ','.join(
-        ingr for ingr, _ in sorted(allergens_dict.items(), key=lambda t: t[1])
+        ingr for ingr, _ in sorted(allergens_dict.items(), key=itemgetter(1))
     )
 
 

@@ -15,7 +15,7 @@ class Node:
     def __add__(self, o):
         res = Node((self, o)).copy()
         while res.explode() or res.split():
-            pass
+            continue
         return res
 
     def copy(self):
